@@ -29,5 +29,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/Will0wn/openwebui:latest
+            ghcr.io/will0wn/openwebui:latest
 
