@@ -30,4 +30,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/will0wn/openwebui:latest
+            ghcr.io/will0wn/openwebui:1.0.0
 
