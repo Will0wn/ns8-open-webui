@@ -1,0 +1,7 @@
+{
+  "id": "openwebui",
+  "title": "Open WebUI",
+  "description": "Interfaccia web per LLM Open WebUI integrata in NS8",
+  "version": "1.0.0"
+}
+

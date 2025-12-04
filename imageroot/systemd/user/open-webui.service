@@ -1,0 +1,24 @@
+[Unit]
+Description=Open WebUI (NS8 module)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=%h/.config/state/open-webui.env
+Restart=always
+TimeoutStartSec=30
+ExecStartPre=/usr/bin/podman rm -f openwebui-app || true
+ExecStart=/usr/bin/podman run \
+  --detach \
+  --replace \
+  --name openwebui-app \
+  --publish 127.0.0.1:${TCP_PORT}:8080 \
+  --volume open-webui:/app/backend/data:Z \
+  --env WEBUI_AUTH=${WEBUI_AUTH} \
+  --env OLLAMA_BASE_URL=${OLLAMA_BASE_URL} \
+  ${OPENWEBUI_IMAGE}
+ExecStop=/usr/bin/podman stop -t 10 openwebui-app
+
+[Install]
+WantedBy=default.target
+

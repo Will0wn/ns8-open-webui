@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+envfile="$HOME/.config/state/open-webui.env"
+image=""
+auth=""
+ollama=""
+[ -f "$envfile" ] && image=$(awk -F'=' '/^OPENWEBUI_IMAGE=/{print $2}' "$envfile")
+[ -f "$envfile" ] && auth=$(awk -F'=' '/^WEBUI_AUTH=/{print $2}' "$envfile")
+[ -f "$envfile" ] && ollama=$(awk -F'=' '/^OLLAMA_BASE_URL=/{print $2}' "$envfile")
+port="${TCP_PORT:-}"
+
+printf '{"image":"%s","webui_auth":"%s","ollama_base_url":"%s","port":"%s"}\n' "$image" "$auth" "$ollama" "$port"
+

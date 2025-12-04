@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+envdir="$HOME/.config/state"
+mkdir -p "$envdir"
+envfile="$envdir/open-webui.env"
+
+if [ ! -f "$envfile" ]; then
+  printf "OPENWEBUI_IMAGE=ghcr.io/open-webui/open-webui:latest\nWEBUI_AUTH=True\nOLLAMA_BASE_URL=\n" > "$envfile"
+fi
+
+systemctl --user daemon-reload
+systemctl --user enable --now open-webui.service
+
