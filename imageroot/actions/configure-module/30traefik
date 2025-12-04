@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+input_json=$(cat)
+
+host=$(jq -r '.host // empty' <<< "$input_json")
+http2https=$(jq -r '.http2https // false' <<< "$input_json")
+lets_encrypt=$(jq -r '.lets_encrypt // false' <<< "$input_json")
+
+if [ -z "${host:-}" ]; then
+  echo "Missing 'host' in configure-module input" >&2
+  exit 2
+fi
+
+envdir="$HOME/.config/state"
+mkdir -p "$envdir"
+envfile="$envdir/open-webui.env"
+touch "$envfile"
+
+grep -q '^HOST=' "$envfile" && sed -i "s|^HOST=.*$|HOST=$host|" "$envfile" || echo "HOST=$host" >> "$envfile"
+grep -q '^HTTP2HTTPS=' "$envfile" && sed -i "s|^HTTP2HTTPS=.*$|HTTP2HTTPS=$http2https|" "$envfile" || echo "HTTP2HTTPS=$http2https" >> "$envfile"
+grep -q '^LETS_ENCRYPT=' "$envfile" && sed -i "s|^LETS_ENCRYPT=.*$|LETS_ENCRYPT=$lets_encrypt|" "$envfile" || echo "LETS_ENCRYPT=$lets_encrypt" >> "$envfile"
+
+# Build target URL to local container
+port="${TCP_PORT:-}"
+if [ -z "$port" ]; then
+  echo "TCP_PORT not set for module" >&2
+  exit 2
+fi
+target="http://127.0.0.1:${port}"
+
+# Create/Update Traefik HTTP route via traefik1 agent
+payload=$(jq -n --arg host "$host" --arg target "$target" --argjson h2h "$http2https" --argjson le "$lets_encrypt" '{host:$host, target:$target, http2https:$h2h, lets_encrypt:$le}')
+
+api-cli run add-http-route --agent module/traefik1 --data "$payload"
+
+echo '{"success":true}'
+

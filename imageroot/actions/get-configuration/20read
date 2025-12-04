@@ -8,7 +8,13 @@ ollama=""
 [ -f "$envfile" ] && image=$(awk -F'=' '/^OPENWEBUI_IMAGE=/{print $2}' "$envfile")
 [ -f "$envfile" ] && auth=$(awk -F'=' '/^WEBUI_AUTH=/{print $2}' "$envfile")
 [ -f "$envfile" ] && ollama=$(awk -F'=' '/^OLLAMA_BASE_URL=/{print $2}' "$envfile")
+host=""
+[ -f "$envfile" ] && host=$(awk -F'=' '/^HOST=/{print $2}' "$envfile")
+http2https=""
+[ -f "$envfile" ] && http2https=$(awk -F'=' '/^HTTP2HTTPS=/{print $2}' "$envfile")
+lets_encrypt=""
+[ -f "$envfile" ] && lets_encrypt=$(awk -F'=' '/^LETS_ENCRYPT=/{print $2}' "$envfile")
 port="${TCP_PORT:-}"
 
-printf '{"image":"%s","webui_auth":"%s","ollama_base_url":"%s","port":"%s"}\n' "$image" "$auth" "$ollama" "$port"
+printf '{"image":"%s","webui_auth":"%s","ollama_base_url":"%s","port":"%s","host":"%s","http2https":%s,"lets_encrypt":%s}\n' "$image" "$auth" "$ollama" "$port" "$host" "${http2https:-false}" "${lets_encrypt:-false}"
 
