@@ -1,0 +1,13 @@
+{
+  "api": "v1",
+  "modules": [
+    {
+      "id": "openwebui",
+      "title": "Open WebUI",
+      "description": "Interfaccia web per LLM integrata in NS8",
+      "module_url": "ghcr.io/will0wn/openwebui:latest",
+      "source_url": "https://github.com/Will0wn/ns8-open-webui"
+    }
+  ]
+}
+
